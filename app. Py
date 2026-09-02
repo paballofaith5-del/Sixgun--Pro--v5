@@ -1,0 +1,44 @@
+from flask import Flask, jsonify, render_template_string
+from flask_cors import CORS
+from datetime import datetime
+
+app = Flask(__name__)
+CORS(app)
+
+HTML_PAGE = """
+<!DOCTYPE html>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SIX GUN PRO V5</title>
+<style>
+body{background:#000;color:white;font-family:Arial;text-align:center;margin:0}
+.circle{width:170px;height:170px;border-radius:50%;border:3px solid #00e5ff;box-shadow:0 0 25px #00e5ff;margin:35px auto 10px;overflow:hidden;background:#000}
+.circle img{width:100%;height:100%;object-fit:cover}
+.card{border:1.5px solid #00e5ff;border-radius:22px;display:flex;justify-content:space-around;padding:18px;margin:28px 14px;background:rgba(15,15,15,0.8)}
+.btn{background:none;border:none;color:#00e5ff;font-size:12px;font-weight:bold}
+.btn-center{border:2px solid #00e5ff;border-radius:50%;width:70px;height:70px;font-size:20px}
+.footer{margin-top:25px;background:#111;padding:8px 18px;border-radius:20px;display:inline-block;font-size:12px}
+#log{margin:15px;background:#111;padding:10px;border-radius:10px;text-align:left;font-size:12px;min-height:50px}
+</style></head><body>
+<div class="circle"><img src="https://i.imgur.com/4v4H3yN.png"></div>
+<h2>SIX GUN PRO V5</h2>
+<div style="color:#aaa">Nzenga Fx Traders</div>
+<div class="card">
+<button class="btn" onclick="fetch('/quotes').then(r=>r.text()).then(t=>log.innerText=t)">📈<br>QUOTES</button>
+<button class="btn btn-center" onclick="fetch('/trade',{method:'POST'}).then(r=>r.text()).then(t=>log.innerText=t)">▶<br>TRADE</button>
+<button class="btn" onclick="fetch('/remove',{method:'POST'}).then(r=>r.text()).then(t=>log.innerText=t)">🗑️<br>REMOVE</button>
+</div>
+<div class="footer">Powered by <b style="color:#00e5ff">EA Mobile Connect</b></div>
+<div id="log">Ready...</div>
+</body></html>
+"""
+
+@app.route("/")
+def home(): return render_template_string(HTML_PAGE)
+@app.route("/quotes")
+def quotes(): return jsonify({"status":"SIX GUN PRO V5 Live","symbol":"XAUUSD","price":"2650"})
+@app.route("/trade", methods=["POST"])
+def trade(): return jsonify({"status":"BUY Executed","saved":"Razor_Trades.csv"})
+@app.route("/remove", methods=["POST"])
+def remove(): return jsonify({"status":"Removed"})
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
